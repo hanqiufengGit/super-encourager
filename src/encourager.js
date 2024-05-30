@@ -15,14 +15,16 @@ function main() {
         let result =
             $1 +
             vscode.Uri.file(path.resolve(dirPath, $2))
-                .with({ scheme: 'vscode-file' })
+                .with({ scheme: 'vscode-resource' })
                 .toString() +
             '"'
         return result
     })
+    // 1.创建并显示Webview
     const panel = vscode.window.createWebviewPanel(
-        'super-encourager', // viewType
+        'super-encourager', // 该webview的标识，任意字符串
         '超级鼓励师', // 视图标题
+        // vscode.ViewColumn.Beside, // 显示在编辑器的哪个部位
         vscode.ViewColumn.Beside, // 显示在编辑器的哪个部位
         {
             enableScripts: true, // 启用JS，默认禁用
@@ -30,7 +32,9 @@ function main() {
             enableCommandUris: true,
         },
     )
+    // 2.设置webview所要渲染的HTML内容
     panel.webview.html = html
+    // 隐藏/恢复
     panel.webview.onDidReceiveMessage(
         async message => {
             log('后台接收消息:' + JSON.stringify(message))
