@@ -37,7 +37,8 @@ async function handle() {
         log('关键字:' + activeKey + '不存在本地图片，正在通过网络获取')
         let newImages = await saveImage(activeKey)
         if (newImages.length === 0) {
-            vscode.window.showErrorMessage('无法获取相关图片，请更改关键字')
+            /** 2021年6月25日09:08:09 hyq */
+            vscode.window.showErrorMessage(`无法获取“${activeKey}”的相关图片，请更改关键字`)
         }
         result.imageUrl = getVscodeImagePath(activeKey, newImages)
     } else {
@@ -70,10 +71,14 @@ function getVscodeImagePath(key, imageNames) {
         )
         console.log('cache success')
     }
-    let vscodeImagePath = vscode.Uri.file(cacheImagePath)
-        .with({ scheme: 'vscode-file' })
-        .toString()
-    log('后台获取到的图片路径:' + vscodeImagePath)
-    return vscodeImagePath
+    /** 2021年6月25日09:08:09 hyq */
+    var imageData = fs.readFileSync(cacheImagePath)
+    const base64Data = Buffer.from(imageData).toString('base64');
+    return "data:image/jpg;base64," + base64Data
+    // let vscodeImagePath = vscode.Uri.file(cacheImagePath)
+    //     .with({ scheme: 'vscode-file' })
+    //     .toString()
+    // log('后台获取到的图片路径:' + vscodeImagePath)
+    // return vscodeImagePath
 }
 exports.handle = handle
